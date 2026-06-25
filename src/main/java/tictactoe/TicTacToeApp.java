@@ -5,6 +5,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
@@ -23,12 +24,15 @@ public class TicTacToeApp extends Application {
     private boolean singlePlayer = true;
     private final char[][] board = new char[3][3];
     private final Label statusLabel = new Label("Choose mode and start a game!");
+    private boolean darkMode = false;
+    private BorderPane root;
+    private GridPane grid;
 
     @Override
     public void start(Stage stage) {
         stage.setTitle("Tic Tac Toe");
 
-        BorderPane root = new BorderPane();
+        root = new BorderPane();
         root.setPadding(new Insets(15));
 
         VBox topPane = new VBox(10);
@@ -44,7 +48,13 @@ public class TicTacToeApp extends Application {
         RadioButton twoPlayerButton = new RadioButton("Two Player");
         twoPlayerButton.setToggleGroup(modeGroup);
 
-        modePane.getChildren().addAll(singlePlayerButton, twoPlayerButton);
+        CheckBox darkModeToggle = new CheckBox("Dark Mode");
+        darkModeToggle.setOnAction(e -> {
+            darkMode = darkModeToggle.isSelected();
+            applyTheme(root);
+        });
+
+        modePane.getChildren().addAll(singlePlayerButton, twoPlayerButton, darkModeToggle);
 
         Button restartButton = new Button("Start / Restart");
         restartButton.setOnAction(e -> resetBoard());
@@ -61,7 +71,7 @@ public class TicTacToeApp extends Application {
             }
         }
 
-        GridPane grid = new GridPane();
+        grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setAlignment(Pos.CENTER);
@@ -94,6 +104,8 @@ public class TicTacToeApp extends Application {
             statusLabel.setText("Two Player mode selected. X goes first.");
             resetBoard();
         });
+
+        applyTheme(root);
 
         Scene scene = new Scene(root, 420, 520);
         stage.setScene(scene);
@@ -248,6 +260,28 @@ public class TicTacToeApp extends Application {
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 3; col++) {
                 cells[row][col].setDisable(disable);
+            }
+        }
+    }
+
+    private void applyTheme(BorderPane root) {
+        if (darkMode) {
+            root.setStyle("-fx-base: #1e1e1e; -fx-control-inner-background: #2d2d2d;");
+            statusLabel.setTextFill(Color.LIGHTCYAN);
+            grid.setStyle("-fx-base: #2d2d2d;");
+            for (int row = 0; row < 3; row++) {
+                for (int col = 0; col < 3; col++) {
+                    cells[row][col].setStyle("-fx-font-size: 36; -fx-padding: 10; -fx-base: #3d3d3d; -fx-text-fill: #ffffff;");
+                }
+            }
+        } else {
+            root.setStyle("");
+            statusLabel.setTextFill(Color.DARKBLUE);
+            grid.setStyle("");
+            for (int row = 0; row < 3; row++) {
+                for (int col = 0; col < 3; col++) {
+                    cells[row][col].setStyle("");
+                }
             }
         }
     }
