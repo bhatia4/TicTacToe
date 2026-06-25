@@ -72,6 +72,7 @@ public class TicTacToeApp extends Application {
                 Button cell = new Button(" ");
                 cell.setMinSize(110, 110);
                 cell.setFont(Font.font(36));
+                cell.setFocusTraversable(false);
                 int r = row;
                 int c = col;
                 cell.setOnAction(e -> handleMove(r, c));
