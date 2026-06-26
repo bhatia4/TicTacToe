@@ -107,6 +107,7 @@ public class TicTacToeApp extends Application {
 
         Scene scene = new Scene(root, 420, 520);
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.show();
     }
 

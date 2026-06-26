@@ -5,11 +5,13 @@ Built using GitHub Copilot and IDE Visual Studio Code.
 - **GUI built using JavaFX**: pom.xaml file has dependencies for the JavaFX Maven plugin
 - **Dynamic Theme Switching**: Click the checkbox to toggle between light and dark modes
 - **Fixed disabling focus traversal on the cells**: The blue highlight is the default JavaFX focus indicator on buttons. After a button is clicked, it retains focus which shows a blue highlight. Let me fix this by disabling focus traversal on the cells
+- **The only code updates doen by me, a human!**: Reused some code around cell updates / disabling loops. Infact consolidated all 3 places of similar loops into a common reusable method for all 3 cases. Also removed unwanted CSS & styling changes
 
 ## Prompts:
 * create tic tac toe game using Java and JavaFX. Make game fun to play. Can be single player with computer or two player mode.
 * as I play the game, it blue highlights a cell next to my last chosen cell. Let remove the blue highlight 
 * lets add dark mode toggle
+* make sure window cannot be resized, only maximized
 
 ## Coding LLMs:
 Claude Haiku 4.5
