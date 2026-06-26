@@ -14,7 +14,7 @@ Built using GitHub Copilot and IDE Visual Studio Code.
 * make sure window cannot be resized, only maximized
 
 ## Coding LLMs:
-Claude Haiku 4.5
+Claude Haiku 4.5 <br/>
 Raptor mini
 
 ## Screenshot(s)
