@@ -1,5 +1,7 @@
 package tictactoe;
 
+import java.util.Arrays;
+
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -20,6 +22,7 @@ import javafx.stage.Stage;
 public class TicTacToeApp extends Application {
 
     private final Button[][] cells = new Button[3][3];
+    private enum CellAction { DISABLE, RESET, SETSTYLE };
     private boolean xTurn = true;
     private boolean singlePlayer = true;
     private final char[][] board = new char[3][3];
@@ -64,12 +67,7 @@ public class TicTacToeApp extends Application {
 
         topPane.getChildren().addAll(modePane, restartButton, statusLabel);
         root.setTop(topPane);
-
-        for (int row = 0; row < 3; row++) {
-            for (int col = 0; col < 3; col++) {
-                board[row][col] = ' ';
-            }
-        }
+        Arrays.stream(board).forEach(row -> Arrays.fill(row, ' '));
 
         grid = new GridPane();
         grid.setHgap(10);
@@ -127,7 +125,7 @@ public class TicTacToeApp extends Application {
         char winner = checkWinner();
         if (winner != ' ') {
             statusLabel.setText((winner == 'T' ? "It's a tie!" : winner + " wins!") + " Click restart to play again.");
-            disableBoard(true);
+            disableBoard();
             return;
         }
 
@@ -150,7 +148,7 @@ public class TicTacToeApp extends Application {
         char winner = checkWinner();
         if (winner != ' ') {
             statusLabel.setText((winner == 'T' ? "It's a tie!" : winner + " wins!") + " Click restart to play again.");
-            disableBoard(true);
+            disableBoard();
             return;
         }
 
@@ -247,43 +245,44 @@ public class TicTacToeApp extends Application {
     private void resetBoard() {
         xTurn = true;
         statusLabel.setText((singlePlayer ? "Single Player" : "Two Player") + " mode. X starts.");
-        for (int row = 0; row < 3; row++) {
-            for (int col = 0; col < 3; col++) {
-                board[row][col] = ' ';
-                cells[row][col].setText(" ");
-                cells[row][col].setDisable(false);
-            }
-        }
+        Arrays.stream(board).forEach(row -> Arrays.fill(row, ' '));
+        updateCellsBasedOnAction(CellAction.RESET, null);
     }
 
-    private void disableBoard(boolean disable) {
-        for (int row = 0; row < 3; row++) {
-            for (int col = 0; col < 3; col++) {
-                cells[row][col].setDisable(disable);
-            }
-        }
+    private void disableBoard() {
+       updateCellsBasedOnAction(CellAction.DISABLE, null);
     }
 
     private void applyTheme(BorderPane root) {
         if (darkMode) {
-            root.setStyle("-fx-base: #1e1e1e; -fx-control-inner-background: #2d2d2d;");
-            statusLabel.setTextFill(Color.LIGHTCYAN);
+            root.setStyle("-fx-base: #1e1e1e;");
             grid.setStyle("-fx-base: #2d2d2d;");
-            for (int row = 0; row < 3; row++) {
-                for (int col = 0; col < 3; col++) {
-                    cells[row][col].setStyle("-fx-font-size: 36; -fx-padding: 10; -fx-base: #3d3d3d; -fx-text-fill: #ffffff;");
-                }
-            }
+            updateCellsBasedOnAction(CellAction.SETSTYLE, "-fx-base: #3d3d3d; -fx-text-fill: #ffffff;");
         } else {
             root.setStyle("");
-            statusLabel.setTextFill(Color.DARKBLUE);
             grid.setStyle("");
-            for (int row = 0; row < 3; row++) {
-                for (int col = 0; col < 3; col++) {
-                    cells[row][col].setStyle("");
-                }
-            }
+            updateCellsBasedOnAction(CellAction.SETSTYLE, "");
         }
+    }
+
+    /**
+     * performs action for all cells in the tic tac toe grid. Action can be either of: sets CSS style, disable or reset cells. 
+     * @param cellAction
+     * @param cssStyling
+     */
+    private void updateCellsBasedOnAction(CellAction cellAction, String cssStyling) {
+        Arrays.stream(cells)
+            .flatMap(Arrays::stream)
+            .forEach(cell -> { 
+                switch (cellAction) {
+                    case DISABLE -> cell.setDisable(true);
+                    case RESET -> {
+                        cell.setText(" ");
+                        cell.setDisable(false);
+                    }
+                    case SETSTYLE -> cell.setStyle(cssStyling == null ? "" : cssStyling);
+                }
+            });
     }
 
     public static void main(String[] args) {
